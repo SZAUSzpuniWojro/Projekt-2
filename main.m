@@ -1,3 +1,5 @@
+%execute sieci.exe
+system('sieci.exe');
 
 tau = 3;
 nB = 4;
@@ -48,6 +50,9 @@ err_wer = (y_mod_wer - y_true_wer)*(y_mod_wer - y_true_wer)'
 
 %saving part
 %proba must be declared in the command line
-message= ['OE_BFGS/OE_BFGS_4neurony' num2str(proba) 'proba'];
+message= ['OE_BFGS/OE_BFGS_5neurony' num2str(proba) 'proba'];
 save(message);
 proba = proba+1; 
+if proba == 6
+    proba = 1;
+end
