@@ -1,11 +1,13 @@
+%execute sieci.exe
+system('sieci.exe'); % PRZY PRZYWRACANIU WORKSPACE WYKOMENTOWAÆ
 
 tau = 3;
 nB = 4;
 nA = 2;
-
+model;
 
 %wyznaczanie wyjœcia sieci neuronowej
-model;
+
 u_ucz = UCZ(:,1)'; 
 u_wer = WER(:,1)';
 y_true_ucz = UCZ(:,2)'; 
@@ -47,7 +49,10 @@ err_ucz = (y_mod_ucz - y_true_ucz)*(y_mod_ucz - y_true_ucz)'
 err_wer = (y_mod_wer - y_true_wer)*(y_mod_wer - y_true_wer)'
 
 %saving part
-%x must be declared in the command line
-mes= ['OE_BFGS/OE_BFGS_2neurony' num2str(x) 'proba'];
-save(y);
-x = x+1; 
+%proba must be declared in the command line
+message= ['OE_BFGS/OE_BFGS_5neurony' num2str(proba) 'proba'];
+save(message);
+proba = proba+1; 
+if proba == 6
+    proba = 1;
+end
