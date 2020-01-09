@@ -1,11 +1,11 @@
 %execute sieci.exe
-%system('sieci.exe'); % PRZY PRZYWRACANIU WORKSPACE WYKOMENTOWAÆ
-clear;
+system('sieci.exe'); % PRZY PRZYWRACANIU WORKSPACE WYKOMENTOWAÆ
+%clear;
 tau = 3;
 nB = 4;
 nA = 2;
-%model; % PRZY PRZYWRACANIU WORKSPACE WYKOMENTOWAÆ
-load('OE_BFGS/OE_BFGS_2neurony5proba.mat');
+model; % PRZY PRZYWRACANIU WORKSPACE WYKOMENTOWAÆ
+%load('OE_BFGS/OE_BFGS_2neurony5proba.mat');
 %wyznaczanie wyjœcia sieci neuronowej
 
 u_ucz = UCZ(:,1)'; 
@@ -49,16 +49,16 @@ err_ucz = (y_mod_ucz - y_true_ucz)*(y_mod_ucz - y_true_ucz)'
 err_wer = (y_mod_wer - y_true_wer)*(y_mod_wer - y_true_wer)'
 err = [err_ucz, err_wer];
 
-fid = fopen('bledy.txt', 'at');
-fprintf(fid, '2N: %d %d\n', err);
+fid = fopen('bledy_OE_NS.txt', 'at');
+fprintf(fid, '10N: %d %d\n', err);
 fclose(fid);
 
 %saving part
 %proba must be declared in the command line
-%proba = proba+1; 
-%if proba == 6
+proba = proba+1; 
+% if proba == 6
 %    proba = 1;
-%end
-%message= ['OE_BFGS/OE_BFGS_10neurony' num2str(proba) 'proba'];
-%save(message); % PRZY PRZYWRACANIU WORKSPACE WYKOMENTOWAÆ
+% end
+message= ['OE_NS/OE_NS_10neurony' num2str(proba) 'proba'];
+save(message); % PRZY PRZYWRACANIU WORKSPACE WYKOMENTOWAÆ
 
