@@ -1,0 +1,95 @@
+function [y, u] = npl_bartek(yzad, alpha1, alpha2, beta1, beta2, umin, umax)
+% regulator NPL 
+    %global w2 w1 w20 w10
+% model;
+    %load('model.mat');
+
+%     alpha1 = -1.272717;
+%     alpha2 = 0.332871;
+%     beta1 = 0.028400;
+%     beta2 = 0.019723;
+
+    na = 2;
+    nb = 4;
+    tau = 3;
+
+    delta = 0.00001;
+
+    N = 20;
+    Nu = 2;
+    lambda = 3;
+
+    n = length(yzad);
+
+    u = zeros(n+N,1);
+    du = zeros(n+N,1);
+%     umin = -1;
+%     umax = 1;
+
+    x1 = zeros(n,1);
+    x2 = zeros(n,1);
+
+    y = zeros(n+N,1);
+    ym = zeros(n,1);
+%     yzad = zeros(n,1);
+%     yzad(50:n,1) = -0.3;
+%     yzad(250:n,1) = 0.1;
+%     yzad(500:n,1) = -1.1;
+%     yzad(750:n,1) = -0.5;
+%%petla regulacji
+    for k=tau+2:n
+        k
+        x1(k) = -alpha1*x1(k-1)+x2(k-1)+beta1*g1(u(k-5));
+        x2(k) = -alpha2*x1(k-1)+beta2*g1(u(k-5));
+        y(k)= g2(x1(k)); %%pomiar wyjscia
+
+        qk = [u(k-5) u(k-6) y(k-1) y(k-2)]';
+        ym(k) = w20 + w2*tanh(w10+w1*qk); %%model neuronowy
+        dk = y(k)-ym(k);
+
+        a = zeros(na,1); %%sukcesywna linearyzacja
+        b = zeros(nb,1);
+        b(5) = (funkcja([u(k-tau)+delta u(k-tau-1) y(k-1) y(k-2)]')-funkcja([u(k-tau) u(k-tau-1) y(k-1) y(k-2)]'))/delta;
+        b(6) = (funkcja([u(k-tau) u(k-tau-1)+delta y(k-1) y(k-2)]')-funkcja([u(k-tau) u(k-tau-1) y(k-1) y(k-2)]'))/delta;
+        a(1) = -(funkcja([u(k-tau) u(k-tau-1) y(k-1)+delta y(k-2)]')-funkcja([u(k-tau) u(k-tau-1) y(k-1) y(k-2)]'))/delta;
+        a(2) = -(funkcja([u(k-tau) u(k-tau-1) y(k-1) y(k-2)+delta]')-funkcja([u(k-tau) u(k-tau-1) y(k-1) y(k-2)]'))/delta;
+
+        M = zeros(N,Nu);
+        s = zeros(N,1);
+
+        for j=1:N %%obliczenie aktualnych wspolczynnikow odpowiedzi skokowej
+            s(j) = 0;
+            for i = 1:min(j,nb)
+                s(j) = s(j) + b(i);
+            end
+            for i = 1:min(j-1,na)
+                s(j) = s(j) - a(i)*s(j-i);
+            end
+        end
+
+
+        for i = 1 : N %%obliczenie M(k)
+            for j = 1 : Nu
+                if (i-j+1)>0
+                    M(i,j)=s(i-j+1);
+                end
+            end
+        end
+
+        K = (M'*M + lambda*eye(Nu,Nu))^-1*M';
+
+        for p = 1:N %%obliczenie odpowiedzi skokowej
+            qk = [u(min(k-5+p,k-1)) u(min(k-6+p,k-1)) y(k-1+p) y(k-2+p)]';
+            y(k+p) = w20 + w2*tanh(w10+w1*qk) + dk;
+        end
+%%prawo regulacji
+        du(k:k+Nu-1) = K*(yzad(k)*ones(N,1)-y(k+1:k+N));
+        u(k) = u(k-1) + du(k);
+        u(k) = min(u(k), umax);
+        u(k) = max(u(k), umin);
+    end
+    y = y(1:n); %%przyciecie wektorow do odpowiedniej dlugosci
+    u = u(1:n);
+end
+
+

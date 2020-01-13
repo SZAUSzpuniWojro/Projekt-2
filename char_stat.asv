@@ -11,9 +11,3 @@ for i = 1:length(u)
 end
 
 plot(u,y);
-
-
-%%%%%%%%%%%
-for i = 1:length(u)
-    y(i) = g2((g1(u(i))*(b1+b2)/(1+a1+a2)));
-end

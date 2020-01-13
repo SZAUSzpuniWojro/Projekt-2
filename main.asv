@@ -1,10 +1,6 @@
 %execute sieci.exe
-clearvars -except proba
-
 system('sieci.exe'); % PRZY PRZYWRACANIU WORKSPACE WYKOMENTOWAÆ
-save_mode = 0;
-przebieg;
-
+%clear;
 tau = 3;
 nB = 4;
 nA = 2;
@@ -28,11 +24,11 @@ end
 
 for k = i:tsim
     %dane ucz¹ce
-    q_u = [flip(u_ucz(k-nB:k-tau)),flip(y_mod_ucz(k-nA:k-1))]'; 
+    q_u = [flip(u_ucz(k-nB:k-tau)),flip(y_true_ucz(k-nA:k-1))]'; 
     y_mod_ucz(k) = w20 + w2* tanh(w10 + w1*q_u);
     
     %dane weryfikuj¹ce
-    q_w = [flip(u_wer(k-nB:k-tau)),flip(y_mod_wer(k-nA:k-1))]';
+    q_w = [flip(u_wer(k-nB:k-tau)),flip(y_true_wer(k-nA:k-1))]';
     y_mod_wer(k) = w20 + w2* tanh(w10 + w1*q_w);
 end
 
@@ -40,13 +36,13 @@ figure(1);
 plot(y_mod_ucz);
 hold on;
 plot(y_true_ucz);
-hold off;
+
 
 figure(2);
 plot(y_mod_wer);
 hold on;
 plot(y_true_wer);
-hold off;
+
 %liczenie b³êdu
 
 err_ucz = (y_mod_ucz - y_true_ucz)*(y_mod_ucz - y_true_ucz)'
