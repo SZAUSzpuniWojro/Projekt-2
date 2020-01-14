@@ -1,23 +1,15 @@
-%symulacja obiektu -> pomiar y(k)
-%linearyzacja modelu -> obliczyæ a,b
-%obliczyæ odp skokow¹ -> sj(k), j=1, N - za pomoc¹ modelu zlinearyzowanego
-%macierz dynamiczna M(k)
-%K(k) = (M'(k)M(k) + Lam*I)^(-1)*M'(k)
-%odpowiedŸ swobodn¹ na podstawie SN
-%obliczyæ sterowanie -> du(k) = K(k)(Y_zad(k) - Y0(k))
-%u(k) = u(k-1) + du(k|k)
-%load('OE_BFGS\OE_BFGS_7neurony4proba.mat')
+load('OE_BFGS\OE_BFGS_7neurony4proba.mat')
 %main;
-model;
+%model;
 clearvars -except w1 w10 w2 w20 proba
 
 tsim=500;
 nB = 4;
 tau = 3;
 nA = 2;
-lbd = 2;
-N = 50;
-Nu = 50;
+lbd = 10;
+N = 20;
+Nu = 1;
 Lbd = lbd * eye(Nu);
 
 alfa1 = -1.535262;
@@ -105,8 +97,6 @@ for k=tau+2:tsim
     Y_zad = ones(N,1)*y_zad(k);
     du = K*(Y_zad - Y0);
     u(k) = u(k-1) + du(1);
-    
-    
     u(k) = min(u(k), 1);
     u(k) = max(u(k), -1);
 end

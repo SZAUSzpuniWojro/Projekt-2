@@ -5,16 +5,16 @@ a2 = 0.586646;
 b1 = 0.027970;
 b2 = 0.023414;
 
-
+save_mode = 0;
 for set = 1:2
     if set == 1
-        rng(16); %UCZENIE
+        rng(3); %UCZENIE
     end
     if set == 2
         rng(2);  %WARYFIKACJA
     end
     
-    tsim = 4000;  % GLOBALS
+    tsim = 2000;  % GLOBALS
     
     x = zeros(2, tsim);
     y = zeros(tsim, 1);
@@ -53,12 +53,12 @@ for set = 1:2
     
 end
 
-% figure(1)
-% plot(1:tsim, UCZ(:,1))
-% hold on;
-% plot(1:tsim, UCZ(:,2))
-% 
-% figure(2)
-% plot(1:tsim, WER(:,1))
-% hold on;
-% plot(1:tsim, WER(:,2))
+figure(1)
+plot(1:tsim, UCZ(:,1))
+hold on;
+plot(1:tsim, UCZ(:,2))
+
+figure(2)
+plot(1:tsim, WER(:,1))
+hold on;
+plot(1:tsim, WER(:,2))
